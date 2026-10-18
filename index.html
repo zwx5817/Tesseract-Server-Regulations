@@ -55,10 +55,19 @@
       -webkit-text-size-adjust: 100%;
     }
 
+    /*
+     * 背景层：高度固定为“地址栏收起后的最大视口高度”。
+     * 不使用 inset，避免地址栏收起动画期间背景层跟着缩、底部露白。
+     */
     body::before {
       content: "";
       position: fixed;
-      inset: -10px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100lvh;
+      height: var(--bg-height, 100lvh);
       z-index: -2;
       background-image: var(--bg-image);
       background-size: cover;
@@ -70,7 +79,12 @@
     body::after {
       content: "";
       position: fixed;
-      inset: -10px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100lvh;
+      height: var(--bg-height, 100lvh);
       z-index: -1;
       background: linear-gradient(
         180deg,
@@ -274,14 +288,6 @@
         font-size: 15px;
       }
 
-      body::before {
-        inset: -60px;
-      }
-
-      body::after {
-        inset: -60px;
-      }
-
       .glass-card {
         padding: 26px 18px 30px;
         border-radius: 20px;
@@ -476,5 +482,41 @@
       </div>
     </div>
   </main>
+
+  <script>
+    // 加载时探测“地址栏收起后的最大视口高度”，固定背景层高度，避免拖动时底部露白
+    document.addEventListener("DOMContentLoaded", function () {
+      var root = document.documentElement;
+      var bgHeight = 0;
+
+      // 用 100lvh 探测最大视口高度；不支持时 offsetHeight 为 0
+      var probe = document.createElement("div");
+      probe.style.cssText =
+        "position:fixed;top:0;left:0;width:1px;height:100lvh;visibility:hidden;pointer-events:none;";
+      document.body.appendChild(probe);
+      bgHeight = probe.offsetHeight || 0;
+      document.body.removeChild(probe);
+
+      function updateBgHeight() {
+        var h = Math.max(
+          bgHeight,
+          window.innerHeight || 0,
+          window.visualViewport ? window.visualViewport.height : 0
+        );
+        // 只增不减：地址栏展开时也不让背景层缩回去
+        if (h > bgHeight) {
+          bgHeight = h;
+        }
+        root.style.setProperty("--bg-height", bgHeight + "px");
+      }
+
+      updateBgHeight();
+
+      window.addEventListener("resize", updateBgHeight);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", updateBgHeight);
+      }
+    });
+  </script>
 </body>
 </html>
