@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TesseractPotato服务器群规（试行）">
+  <title>TesseractPotato服务器群规（试行）</title>
+
+  <script>
+    // 随机选 beijing1~17.jpg，并随机背景截取位置
+    (function () {
+      var total = 17;
+      var n = Math.floor(Math.random() * total) + 1;
+
+      var posX = Math.floor(Math.random() * 101);
+      var posY = Math.floor(Math.random() * 101);
+
+      var root = document.documentElement;
+      root.style.setProperty("--bg-image", 'url("beijing' + n + '.jpg")');
+      root.style.setProperty("--bg-pos", posX + "% " + posY + "%");
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-image: url("beijing1.jpg");
+      --bg-pos: 50% 50%;
+
+      /* 液态玻璃透明度：0.45 更透，0.72 更实、更清楚 */
+      --glass-alpha: 0.60;
+
+      --text: #1b2430;
+      --text-soft: #4b5563;
+      --accent: #2563eb;
+      --line: rgba(30, 41, 59, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 16px 56px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      background: #1b2430;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -10px;
+      z-index: -2;
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: var(--bg-pos);
+      background-repeat: no-repeat;
+      background-color: #1b2430;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -10px;
+      z-index: -1;
+      background: linear-gradient(
+        180deg,
+        rgba(12, 18, 28, 0.10),
+        rgba(12, 18, 28, 0.22)
+      );
+      pointer-events: none;
+    }
+
+    .glass-card {
+      position: relative;
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 38px 42px 44px;
+      border-radius: 28px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, calc(var(--glass-alpha) + 0.12)) 0%,
+          rgba(255, 255, 255, var(--glass-alpha)) 45%,
+          rgba(255, 255, 255, calc(var(--glass-alpha) + 0.08)) 100%
+        );
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.18),
+        0 4px 14px rgba(15, 23, 42, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+      -webkit-backdrop-filter: blur(26px) saturate(180%);
+      backdrop-filter: blur(26px) saturate(180%);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.55) 0%,
+          rgba(255, 255, 255, 0.10) 30%,
+          rgba(255, 255, 255, 0) 55%
+        ),
+        radial-gradient(
+          120% 80% at 20% 0%,
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0) 60%
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glass-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 8%;
+      right: 8%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.95),
+        transparent
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glass-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.35;
+      text-align: center;
+      color: #111827;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .meta {
+      text-align: center;
+      color: var(--text-soft);
+      font-size: 14px;
+      margin-bottom: 30px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 34px 0 12px;
+      padding-left: 10px;
+      border-left: 4px solid var(--accent);
+      font-size: 20px;
+      line-height: 1.45;
+      color: #111827;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    ol, ul {
+      margin: 10px 0;
+      padding-left: 26px;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    .sub {
+      margin: 8px 0 8px 18px;
+      color: #333d4a;
+    }
+
+    .note {
+      color: var(--text-soft);
+      font-size: 15px;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+      backdrop-filter: blur(10px) saturate(150%);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid rgba(30, 41, 59, 0.18);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.55);
+      font-weight: 600;
+    }
+
+    /* 表格拖动提示：电脑端隐藏，手机端显示 */
+    .table-tip {
+      display: none;
+      margin: -4px 0 0;
+      font-size: 13px;
+      color: var(--text-soft);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    strong {
+      color: #0f172a;
+    }
+
+    .footer {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--text-soft);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 16px 10px 36px;
+        font-size: 15px;
+      }
+
+      body::before {
+        inset: -60px;
+      }
+
+      body::after {
+        inset: -60px;
+      }
+
+      .glass-card {
+        padding: 26px 18px 30px;
+        border-radius: 20px;
+        -webkit-backdrop-filter: blur(20px) saturate(170%);
+        backdrop-filter: blur(20px) saturate(170%);
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 14px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      th, td {
+        padding: 8px 10px;
+      }
+
+      .sub {
+        margin-left: 6px;
+      }
+
+      /* 手机端显示拖动提示 */
+      .table-tip {
+        display: block;
+      }
+    }
+
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .glass-card {
+        background: rgba(255, 255, 255, 0.88);
+      }
+      .box {
+        background: rgba(255, 255, 255, 0.80);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="glass-card">
+    <div class="glass-content">
+      <h1>TesseractPotato服务器群规（试行）</h1>
+      <div class="meta">发布日期：2026年10月18日</div>
+
+      <p>为维护本群正常交流秩序，保障群成员和管理员的合法权益，现制定本群规。请所有成员入群后阅读并遵守。</p>
+
+      <h2>一、基本原则</h2>
+      <ol>
+        <li>交流请<strong>对事不对人</strong>，尊重他人，理性表达。</li>
+        <li>可以讨论问题、提出意见、批评具体做法，但<strong>不得对他人进行人身攻击、贬损、侮辱、挑衅或阴阳怪气</strong>。</li>
+        <li>管理员也是群成员，享有同等被尊重的权利；对管理有意见可以提出、私聊或申诉，但不得公开辱骂、贬损管理员，不得与管理员对骂。</li>
+        <li>群规自发布之日起生效。发布前的事件以提醒教育为主；但严重人身攻击、辱骂、威胁、造谣、骚扰等，管理员可临时处理。</li>
+      </ol>
+
+      <h2>二、禁止行为</h2>
+      <p>以下行为属于违规：</p>
+      <ol>
+        <li>
+          <strong>人身攻击/贬损</strong>：对他人贴侮辱性、贬低性标签，或否定他人人格。
+          <div class="sub">例如：无具体事实和上下文，突然对他人说“你堕落了”“你烂了”“你不行了”“你就是个笑话”等。</div>
+          <div class="sub note">说明：“堕落”等词不是脏话，但无具体事由、直接指向个人时，属于人身贬损，可按本群规处理。</div>
+        </li>
+        <li><strong>辱骂/粗口</strong>：使用脏话、侮辱性称呼攻击他人。</li>
+        <li><strong>无事实指控</strong>：没有具体事情依据，公开指责、抹黑、造谣他人。</li>
+        <li><strong>挑衅引战</strong>：反复阴阳怪气、挑衅、激怒他人，或拉帮结派攻击他人。</li>
+        <li><strong>骚扰</strong>：反复@、私聊骚扰、追骂。</li>
+        <li><strong>广告/诈骗/违法内容</strong>：发布广告、诈骗、色情、暴力、政治敏感或其他违法内容。</li>
+        <li><strong>滥用管理权限</strong>：管理员不得无理由删帖、禁言、踢人；处理需留证并说明理由。</li>
+      </ol>
+
+      <h2>三、对事不对人的判断标准</h2>
+      <p>本群规不以列举为限。判断是否属于人身攻击/贬损，重点看以下标准；符合任一标准的，均可认定为人身攻击/贬损：</p>
+      <ol>
+        <li>是<strong>针对具体行为、具体说法</strong>，还是直接否定、贬低<strong>这个人本身</strong>；</li>
+        <li>是否有<strong>具体事实和上下文依据</strong>，还是无端贴标签；</li>
+        <li>是否使用<strong>贬损、侮辱、羞辱、嘲讽、否定人格</strong>的词语或表达；</li>
+        <li>是否<strong>公开针对个人</strong>、反复挑衅、拉帮结派攻击；</li>
+        <li>对方明确表示不适或管理员提醒后，是否<strong>仍继续</strong>。</li>
+      </ol>
+
+      <div class="box">
+        <p><strong>以下仅为示例，包括但不限于：</strong></p>
+        <p><strong>一般不按人身攻击处理，但请语气文明：</strong></p>
+        <ul>
+          <li>针对具体事情说：“你这件事做得不妥”“这个做法有问题”“我不认同你的观点”。</li>
+          <li>朋友间明显玩笑、双方都能接受的调侃。</li>
+          <li>有具体事实依据的批评和讨论。</li>
+        </ul>
+        <p><strong>按人身贬损处理：</strong></p>
+        <ul>
+          <li>没有具体事由，直接对个人说“你堕落了”“你废了”等贬损标签；</li>
+          <li>不讨论事情，只否定、羞辱、嘲讽对方本人；</li>
+          <li>对方明确表示不适后仍继续；</li>
+          <li>使用新词、谐音、隐喻、表情包、反话等方式，实际达到贬损、羞辱、否定人格效果的，同样按人身贬损处理；</li>
+          <li>名为“批评”，实际不针对具体行为，只对人贴标签、否定人格的，按人身贬损处理。</li>
+        </ul>
+      </div>
+
+      <h2>四、对管理员的特别保护与先行处置</h2>
+      <ol>
+        <li>群成员对管理员有意见，应<strong>就事论事</strong>提出，或私聊、申诉；不得在群内辱骂、贬损、挑衅管理员，不得与管理员对骂。</li>
+        <li>群成员对管理员实施<strong>辱骂、人身贬损、公开挑衅、对骂、造谣、骚扰</strong>等行为的，管理员可<strong>先行直接禁言、移出或拉黑</strong>，无需事先警告或集体表决。</li>
+        <li>先行处置后，处置管理员应<strong>及时在管理员群报备</strong>，并提交事实和证据，包括：完整聊天截图、时间、上下文、是否@他人、处置理由。</li>
+        <li>管理员不得借“对管理员不敬”处理正常批评、合理质疑或不同意见；只有达到辱骂、人身贬损、挑衅对骂、造谣骚扰等程度，才可先行处置。</li>
+        <li>其他管理员收到报备后应及时复核；如属误判或滥用，应纠正并在群内说明。</li>
+      </ol>
+
+      <h2>五、处理流程</h2>
+      <ol>
+        <li><strong>留存证据</strong>：管理员处理前应保存截图/聊天记录，包括时间、上下文、是否@他人。对管理员实施辱骂、贬损、挑衅、对骂等需立即制止的违规行为，管理员可<strong>先禁言/移出/拉黑，事后补交证据并报备</strong>。</li>
+        <li><strong>先提醒后处罚</strong>：一般违规先警告并删除/撤回不当消息；拒不改正或再次违规，升级处理。</li>
+        <li><strong>严重违规直接处理</strong>：辱骂、威胁、造谣、骚扰、恶意引战、辱骂或对骂管理员等，可直接禁言、移出或拉黑。</li>
+        <li><strong>处理说明</strong>：管理员应在群内简要说明处理原因，避免无理由处罚；管理员对辱骂、贬损、挑衅自己或与自己对骂的成员先行禁言/移出/拉黑后，应在管理员群报备并提交事实和证据。</li>
+        <li><strong>申诉</strong>：被处理成员可私聊任意管理员申诉，管理员应在24小时内复核；管理员处理有误的，应及时纠正。</li>
+      </ol>
+
+      <h2>六、处罚分级</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>级别</th>
+            <th>情形</th>
+            <th>处理</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>首次轻微不当言论</td><td>提醒/警告，删除或撤回消息</td></tr>
+          <tr><td>2</td><td>警告后不改，或再次人身贬损</td><td>禁言（时长视情节决定）</td></tr>
+          <tr><td>3</td><td>多次违规、公开辱骂、挑衅引战</td><td>移出本群</td></tr>
+          <tr><td>4</td><td>严重辱骂、威胁、造谣、骚扰、诈骗、违法内容</td><td>直接移出并拉黑，必要时举报</td></tr>
+          <tr><td>5</td><td>辱骂、贬损、挑衅管理员或与管理员对骂</td><td>管理员可先行禁言/移出/拉黑，事后在管理员群提交证据报备</td></tr>
+        </tbody>
+      </table>
+      <p class="table-tip">← 表格可左右拖动查看 →</p>
+      <p>管理员可根据情节轻重调整；对管理员本人的无具体事由贬损，同样适用本群规。</p>
+
+      <h2>七、管理员行为规范</h2>
+      <ol>
+        <li>管理员处理违规时应<strong>留证、说明理由、按群规执行</strong>。</li>
+        <li>管理员不得因个人情绪针对成员，不得滥用禁言、踢人权限。</li>
+        <li>管理员受到无具体事由的人身贬损时，可正常按群规处理，但应避免在群内对骂。</li>
+        <li>对辱骂、贬损、挑衅管理员或与管理员对骂的成员，管理员可先行直接禁言/移出/拉黑，事后及时在管理员群报备并提交事实和证据。</li>
+        <li>管理员处理有争议的，成员可申诉；经复核属滥用权限的，应纠正并道歉。</li>
+      </ol>
+
+      <h2>八、附则</h2>
+      <ol>
+        <li>本群规自<strong>2026年10月18日</strong>起试行。</li>
+        <li>本群规所列情形为<strong>示例，不是穷尽清单</strong>。未列举但符合本群规原则和“对事不对人”判断标准的行为，管理员可按本群规处理。</li>
+        <li>群规未尽事宜，由管理员按“对事不对人、先提醒后处罚、处理留证”的原则处理。</li>
+        <li>对本群规有意见，可向任意管理员提出，我们会根据实际情况修订。</li>
+      </ol>
+
+      <p>请各位成员共同维护群内交流环境。感谢配合。</p>
+
+      <div class="footer">TesseractPotato服务器 · 群规页面</div>
+    </div>
+  </main>
+</body>
+</html>
